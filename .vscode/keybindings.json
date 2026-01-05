@@ -1,0 +1,8 @@
+[
+    {
+        "key": "ctrl+enter",
+        "command": "workbench.action.tasks.runTask",
+        "args": "Run current JS file",
+        "when": "resourceExtname == .js"
+    }
+]
