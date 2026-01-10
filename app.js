@@ -1,21 +1,9 @@
 const prompt = require("prompt-sync")();
 
 
-// -----------------------------------------------------------------  G L O B A L   V A R I A B L E S
-let userInputMediaType = undefined;
-let userInputAction = undefined;
-let indexMediaTypeData = undefined;
-let mediaTypeData = undefined;
-let totalIndices = undefined;
-let indexOfItem = undefined;
-const mediaTypes = ['1', '2', '3'];
-const mediaTypesNames = ['BOOKS', 'MOVIES', 'CDs'];
-const bookItems = [];
-const movieItems = [];
-const cdItems = [];
-const mediaItems = [bookItems, movieItems, cdItems];
-const actionToPerform = ['1', '2', '3', '4', '5', '6'];
-const actionFunctions = [displayItems, addItem, consultItem, editItem, removeItem];
+
+
+
 
 // -----------------------------------------------------------------  C L A S S E S 
 // Parent class
@@ -80,7 +68,7 @@ class Movie extends Media {
     }
 }
 // Child class extending Media
-class CD extends Media {
+class Cd extends Media {
     constructor(title, artist, songs) {
         super(title);
         this._artist = artist;
@@ -94,222 +82,220 @@ class CD extends Media {
     }
 }
 
-// -------------------------  S E E D   D A T A 
-bookItems.push(new Book('The Housemaid', 'Freida McFadden', 336));
-bookItems.push(new Book('A Little Life', 'Hanya Yanagihara', 720));
-movieItems.push(new Movie('Interestellar', 'Christopher Nolan', 169));
-movieItems.push(new Movie('Shrek', 'Andrew Adamson & Vicky Jenson', 90));
-cdItems.push(new CD('The Death of Slim Shady (Coup de Grâce)', 'Eminem', ['Habits', 'Trouble', 'Brand New Dance']));
-cdItems.push(new CD('Under My Skin', 'Avril Lavigne', ['Don`t Tell Me', 'My Happy Ending', 'Freak Out']));
+
+
+// -----------------------------------------------------------------  G L O B A L   V A R I A B L E S
+let activeMediaTypeName = undefined;
+let activeMediaTypeData = undefined;
+const bookData = [];
+const movieData = [];
+const cdData = [];
+const mediaTypeData = [bookData, movieData, cdData];
+const mediaTypeNames = ['BOOKS', 'MOVIES', 'CDs'];
+const actionFunctionsNames = ['MAIN MENU', 'ADD NEW ITEM', 'AVERAGE RATING', 'EDIT ITEM', 'REMOVE ITEM']
+
+// -----------------------------------------------------------------  S E E D   D A T A 
+bookData.push(new Book('The Housemaid', 'Freida McFadden', 336));
+bookData.push(new Book('A Little Life', 'Hanya Yanagihara', 720));
+movieData.push(new Movie('Interestellar', 'Christopher Nolan', 169));
+movieData.push(new Movie('Shrek', 'Andrew Adamson & Vicky Jenson', 90));
+cdData.push(new Cd('The Death of Slim Shady (Coup de Grâce)', 'Eminem', ['Habits', 'Trouble', 'Brand New Dance']));
+cdData.push(new Cd('Under My Skin', 'Avril Lavigne', ['Don`t Tell Me', 'My Happy Ending', 'Freak Out']));
 // Add random ratings to each seeded item
-for (let k = 0; k < mediaItems.length; k += 1) {
-    for (let j = 0; j < mediaItems[k].length; j += 1) {
+for (let k = 0; k < mediaTypeData.length; k += 1) {
+    for (let j = 0; j < mediaTypeData[k].length; j += 1) {
         for (let i = 1; i <= 5; i += 1) {
-            mediaItems[k][j].addRating(Math.floor(Math.random() * 6));
+            mediaTypeData[k][j].addRating(Math.floor(Math.random() * 6));
         }
     }
 }
 
 // -----------------------------------------------------------------  A C T I O N   F U N C T I O N S  
-// ------------------------------------------  I T E M S   E X I S T
+// -----------------------------------------------------------------  I T E M S   E X I S T
 // Check whether the selected media type has any items
 function itemsExist() {
-    if (mediaTypeData.length === 0) {
-        console.log(`\nNo items available in the '${mediaTypesNames[indexMediaTypeData]}' category`);
+    if (activeMediaTypeData.length === 0) {
+        console.log(`\nNo items available in the '${activeMediaTypeName}' category`);
         return true;
     } else {
         return false;
     }
 }
 
-// ------------------------------------------  D I S P L A Y   I T E M S
+// -----------------------------------------------------------------  R E Q U E S T   I N D E X 
+function requestIndex() {
+    // Determine the valid index range
+    const totalIndices = activeMediaTypeData.length - 1;
+    // Prompt for and validate the item index
+    let userInputIndex = undefined;
+    do {
+        userInputIndex = prompt(`    Enter the item index (0 - ${totalIndices}): `);
+        // Exit action and return to Action Menu when Enter is pressed
+        if (userInputIndex.length === 0) {
+            return requestAction();
+        }
+        // Convert input to a number for validation
+        userInputIndex = Number(userInputIndex);
+    } while (userInputIndex > totalIndices || userInputIndex < 0 || Number.isNaN(userInputIndex) || !Number.isInteger(userInputIndex))
+    return userInputIndex;
+}
+
+// -----------------------------------------------------------------  R E Q U E S T   A D D   I T E M 
+function requestAddItem() {
+    let userInputAddItem = undefined;
+    do {
+        console.log(`            Confirm adding this item?
+            [y] - YES
+            [n] - NO`);
+        userInputAddItem = prompt().toLocaleLowerCase().trim();
+    } while (userInputAddItem !== 'y' && userInputAddItem !== 'n');
+    return userInputAddItem;
+}
+
+// -----------------------------------------------------------------  D I S P L A Y   I T E M S
 // Display all items for the selected media type
 function displayItems() {
     if (itemsExist()) {
         return requestAction();
     };
-    console.table(mediaTypeData);
+    console.table(activeMediaTypeData);
     return requestAction();
 }
 
-// ------------------------------------------  A D D   I T E M
+// -----------------------------------------------------------------  A D D   I T E M
 function addItem() {
     // Display action header
-    console.log(`\n${mediaTypesNames[indexMediaTypeData]} > ADD NEW ITEM`);
+    console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[1]}`);
     console.log(''.padEnd(70, '· '));
-    // Prompt for and validate title and creator
-    let addItemTitle = undefined;
-    let addItemCreator = undefined;
+    // Prompt for and validate title
+    let userInputTitle = undefined;
     do {
-        addItemTitle = prompt(`    Enter a title: `).trim();
-    } while (addItemTitle.length === 0)
+        userInputTitle = prompt(`    Enter a title: `).trim();
+    } while (userInputTitle.length === 0);
+    // Prompt for and validate reator
+    let userInputCreator = undefined;
     do {
-        addItemCreator = prompt(`    Enter an author, director, or artist: `).trim();
-    } while (addItemCreator.length === 0)
-
+        userInputCreator = prompt(`    Enter an author, director, or artist: `).trim();
+    } while (userInputCreator.length === 0);
 
     // Handle book-specific properties
-    if (indexMediaTypeData === 0) {
-        let addPages = undefined;
-        let confirmItem = undefined;
+    if (activeMediaTypeName === mediaTypeNames[0]) {
         // Prompt for and validate number of pages
+        let userInputPages = undefined;
         do {
-            addPages = +prompt(`    Enter the number of pages: `).trim();
-        } while (Number.isNaN(addPages) || addPages < 1 || addPages > 1500 || !Number.isInteger(addPages))
+            userInputPages = +prompt(`    Enter the number of pages: `).trim();
+        } while (Number.isNaN(userInputPages) || userInputPages < 1 || userInputPages > 1500 || !Number.isInteger(userInputPages))
         // Prompt to confirm adding the item
-        do {
-            console.log(`        Confirm adding this item?
-        [y] - YES
-        [n] - NO`);
-            confirmItem = prompt().toLocaleLowerCase().trim();
-        } while (confirmItem !== 'y' && confirmItem !== 'n')
-        if (confirmItem === 'y') {
+        const addItem = requestAddItem();
+        if (addItem === 'y') {
             // If confirmed, create and add the book, then display all books
-            bookItems.push(new Book(addItemTitle, addItemCreator, addPages));
+            bookData.push(new Book(userInputTitle, userInputCreator, userInputPages));
             return displayItems();
-        } else if (confirmItem === 'n') {
+        } else if (addItem === 'n') {
             // If cancelled, return to the action menu
             return requestAction();
         }
     }
-
 
     // Handle movie-specific properties
-    if (indexMediaTypeData === 1) {
-        let addRuntime = undefined;
-        let confirmItem = undefined;
+    else if (activeMediaTypeName === mediaTypeNames[1]) {
         // Prompt for and validate runtime
+        let userInputRuntime = undefined;
         do {
-            addRuntime = +prompt(`    Enter runtime (in minutes): `).trim();
-        } while (Number.isNaN(addRuntime) || addRuntime < 1 || !Number.isInteger(addRuntime) || addRuntime > 600)
+            userInputRuntime = +prompt(`    Enter runtime (in minutes): `).trim();
+        } while (Number.isNaN(userInputRuntime) || userInputRuntime < 1 || !Number.isInteger(userInputRuntime) || userInputRuntime > 600)
         // Prompt to confirm adding the item
-        do {
-            console.log(`        Confirm adding this item?
-        [y] - YES
-        [n] - NO`);
-            confirmItem = prompt().toLocaleLowerCase().trim();
-        } while (confirmItem !== 'y' && confirmItem !== 'n')
-        if (confirmItem === 'y') {
+        const addItem = requestAddItem();
+        if (addItem === 'y') {
             // If confirmed, create and add the movie, then display all movies
-            movieItems.push(new Movie(addItemTitle, addItemCreator, addRuntime));
+            movieData.push(new Movie(userInputTitle, userInputCreator, userInputRuntime));
             return displayItems();
-        } else if (confirmItem === 'n') {
+        } else if (addItem === 'n') {
             // If cancelled, return to the action menu
             return requestAction();
         }
     }
 
-
-    // Handle CD-specific properties
-    if (indexMediaTypeData === 2) {
+    // Handle cd-specific properties
+    else if (activeMediaTypeName === mediaTypeNames[2]) {
         const cdSongs = [];
-        let addSong = undefined;
-        let repeatAddSong = undefined;
-        const addNewSong = (newSong) => {
+        const addSong = (newSong) => {
             cdSongs.push(newSong);
         }
-        let confirmItem = undefined;
         do {
             // Prompt for and validate song title
+            let userInputSong = undefined;
             do {
-                addSong = prompt(`    Enter song title: `).trim();
-            } while (addSong.length === 0);
-            // Add song to the list
-            addNewSong(addSong);
+                userInputSong = prompt(`    Enter song title: `).trim();
+            } while (userInputSong.length === 0);
+            addSong(userInputSong);
             // Ask whether to add another song
+            let userInputAnotherSong = undefined;
             do {
                 console.log(`        Add another song?
         [y] - YES
         [n] - NO`);
-                repeatAddSong = prompt().toLowerCase().trim();
-            } while (repeatAddSong !== 'y' && repeatAddSong !== 'n')
-        } while (repeatAddSong === 'y');
-        // Prompt to confirm adding the CD
-        do {
-            console.log(`            Confirm adding this item?
-            [y] - YES
-            [n] - NO`);
-            confirmItem = prompt().toLocaleLowerCase().trim();
-        } while (confirmItem !== 'y' && confirmItem !== 'n');
-        if (confirmItem === 'y') {
+                userInputAnotherSong = prompt().toLowerCase().trim();
+            } while (userInputAnotherSong !== 'y' && userInputAnotherSong !== 'n')
+        } while (userInputAnotherSong === 'y');
+        // Prompt to confirm adding the cdData
+        const addItem = requestAddItem();
+        if (addItem === 'y') {
             // If confirmed, create and add the CD, then display all CDs
-            cdItems.push(new CD(addItemTitle, addItemCreator, cdSongs));
+            cdData.push(new Cd(userInputTitle, userInputCreator, cdSongs));
             return displayItems();
-        } else if (confirmItem === 'n') {
+        } else if (addItem === 'n') {
             // If cancelled, return to the action menu
             return requestAction();
         }
     }
-    return requestAction();
 }
 
-// ------------------------------------------  C O N S U L T   I T E M 
-function consultItem() {
+// -----------------------------------------------------------------  L O G   A V E R A G E   R A T I N G
+function logAverageRating() {
     // Display action header
-    console.log(`\n${mediaTypesNames[indexMediaTypeData]} > AVERAGE RATING`);
+    console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[2]}`);
     console.log(''.padEnd(70, '· '));
     // Ensure items exist before continuing
     if (itemsExist()) {
         return requestAction();
     };
-    // Determine the valid index range
-    totalIndices = mediaTypeData.length - 1;
-    // Prompt for and validate item index
-    do {
-        indexOfItem = prompt(`    Enter the item index (0 - ${totalIndices}): `);
-        // Exit action and return to Action Menu when Enter is pressed
-        if (indexOfItem.length === 0) {
-            return requestAction();
-        }
-        // Convert input to a number for validation
-        indexOfItem = Number(indexOfItem);
-    } while (indexOfItem > totalIndices || indexOfItem < 0 || Number.isNaN(indexOfItem) || !Number.isInteger(indexOfItem))
+    // Prompt for and validate the item index 
+    const indexOfItem = requestIndex();
     // Inform the user if the item has no ratings
-    if (mediaTypeData[indexOfItem].ratings.length === 0) {
+    if (activeMediaTypeData[indexOfItem].ratings.length === 0) {
         console.log(`\nThis item has no ratings yet.`);
         return requestAction();
     }
     // Display star-based rating visualization
     const starSymbol = '◆ ';
     let starRating = [];
-    for (let i = 1; i <= Math.floor(mediaTypeData[indexOfItem].getAverageRating()); i += 1) {
+    for (let i = 1; i <= Math.floor(activeMediaTypeData[indexOfItem].getAverageRating()); i += 1) {
         starRating.push(starSymbol);
     }
     console.log(`\n${starRating.join('')}`.padEnd(10, '◇ '));
-    console.log(mediaTypeData[indexOfItem].getAverageRating());
+    console.log(activeMediaTypeData[indexOfItem].getAverageRating());
     return requestAction();
 }
 
-// ------------------------------------------  E D I T   I T E M
+// -----------------------------------------------------------------  E D I T   I T E M
 function editItem() {
-    const taskToPerformMessage = `    Select a task:
-        [1] - Toggle isCheckedOut
-        [2] - Add a new rating`;
-    let userInputTaskToPerform = undefined;
-    const taskToPerform = ['1', '2'];
-    let newRatingValue = undefined;
     // Display action header
-    console.log(`\n${mediaTypesNames[indexMediaTypeData]} > EDIT ITEM`);
+    console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[3]}`);
     console.log(''.padEnd(70, '· '));
     // Ensure items exist before continuing
     if (itemsExist()) {
         return requestAction();
     };
-    // Determine the valid index range
-    totalIndices = mediaTypeData.length - 1;
-    // Prompt for and validate the item index
-    do {
-        indexOfItem = prompt(`    Enter the item index (0 - ${totalIndices}): `);
-        // Exit action and return to Action Menu when Enter is pressed
-        if (indexOfItem.length === 0) {
-            return requestAction();
-        }
-        // Convert input to a number for validation
-        indexOfItem = Number(indexOfItem);
-    } while (indexOfItem > totalIndices || indexOfItem < 0 || Number.isNaN(indexOfItem) || !Number.isInteger(indexOfItem))
+    // Prompt for and validate the item index 
+    const indexOfItem = requestIndex();
     // Prompt for and validate the selected task
+    let userInputTaskToPerform = undefined;
+    const taskToPerform = ['1', '2'];
     do {
-        console.log(taskToPerformMessage);
+        console.log(`    Select a task:
+            [1] - Toggle isCheckedOut
+            [2] - Add a new rating`);
         userInputTaskToPerform = prompt().trim();
         // Exit action and return to Action Menu when Enter is pressed
         if (userInputTaskToPerform.length === 0) {
@@ -318,63 +304,55 @@ function editItem() {
     } while (!taskToPerform.includes(userInputTaskToPerform))
     // Toggle checked out status
     if (userInputTaskToPerform === taskToPerform[0]) {
-        mediaTypeData[indexOfItem].toggleCheckedOutStatus();
-        console.table(mediaTypeData[indexOfItem]);
-    } else {
+        activeMediaTypeData[indexOfItem].toggleCheckedOutStatus();
+        console.table(activeMediaTypeData[indexOfItem]);
+    } else if (userInputTaskToPerform === taskToPerform[1]) {
         // Prompt for and validate rating value
+        let userInputRatingValue = undefined;
         do {
-            newRatingValue = prompt(`    Enter a rating (0-1-2-3-4-5): `).trim();
-            if (newRatingValue.length === 0) {
+            userInputRatingValue = prompt(`    Enter a rating (0-1-2-3-4-5): `).trim();
+            if (userInputRatingValue.length === 0) {
                 return requestAction();
             }
-            newRatingValue = Number(newRatingValue);
-        } while (newRatingValue < 0 || newRatingValue > 5 || Number.isNaN(newRatingValue) || !Number.isInteger(newRatingValue))
+            userInputRatingValue = Number(userInputRatingValue);
+        } while (userInputRatingValue < 0 || userInputRatingValue > 5 || Number.isNaN(userInputRatingValue) || !Number.isInteger(userInputRatingValue))
         // Add the new rating to the selected item
-        mediaTypeData[indexOfItem].addRating(newRatingValue);
-        console.table(mediaTypeData[indexOfItem]);
+        activeMediaTypeData[indexOfItem].addRating(userInputRatingValue);
+        console.table(activeMediaTypeData[indexOfItem]);
     }
     return requestAction();
 }
 
-// ------------------------------------------  R E M O V E   I T E M
+// -----------------------------------------------------------------  R E M O V E   I T E M
 function removeItem() {
     // Display action header
-    console.log(`\n${mediaTypesNames[indexMediaTypeData]} > REMOVE ITEM `);
+    console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[4]} `);
     console.log(''.padEnd(70, '· '));
     // Ensure items exist before continuing
     if (itemsExist()) {
         return requestAction();
     };
-    // Determine the valid index range
-    totalIndices = mediaTypeData.length - 1;
-    // Prompt for and validate the item index
-    do {
-        indexOfItem = prompt(`    Enter the item index (0 - ${totalIndices}): `);
-        // Exit action and return to Action Menu when Enter is pressed
-        if (indexOfItem.length === 0) {
-            return requestAction();
-        }
-        // Convert input to a number for validation
-        indexOfItem = Number(indexOfItem);
-    } while (indexOfItem > totalIndices || indexOfItem < 0 || Number.isNaN(indexOfItem) || !Number.isInteger(indexOfItem))
+    // Prompt for and validate the item index 
+    const indexOfItem = requestIndex();
     // Remove the item at the selected index
-    mediaTypeData.splice(indexOfItem, 1);
+    activeMediaTypeData.splice(indexOfItem, 1);
     return displayItems();
 }
 
 
 // -----------------------------------------------------------------  R E Q U E S T   M E D I A   T Y P E
 function requestMediaType() {
-    const mainMenuMessage = `Select a media type (or press Enter to exit the app):
-    [1] - Books
-    [2] - Movies
-    [3] - CDs`;
     // Display Main Menu header
-    console.log(`MAIN MENU`);
+    console.log(`\n${actionFunctionsNames[0]}`);
     console.log(''.padEnd(70, '· '));
     // Prompt for and validate media type selection
+    const mediaTypes = ['1', '2', '3'];
+    let userInputMediaType = undefined;
     do {
-        console.log(mainMenuMessage);
+        console.log(`Select a media type (or press Enter to exit the app):
+    [1] - Books
+    [2] - Movies
+    [3] - CDs`);
         userInputMediaType = prompt().trim();
         // Exit the App when Enter is pressed
         if (userInputMediaType.length === 0) {
@@ -382,26 +360,30 @@ function requestMediaType() {
         }
     } while (!mediaTypes.includes(userInputMediaType))
     // Set the active media array based on user selection
-    indexMediaTypeData = mediaTypes.indexOf(userInputMediaType);
-    mediaTypeData = mediaItems[mediaTypes.indexOf(userInputMediaType)];
+    // indexMediaTypeData = mediaTypes.indexOf(userInputMediaType);
+    activeMediaTypeName = mediaTypeNames[Number(userInputMediaType) - 1];
+    // activeMediaTypeData = mediaTypeData[mediaTypes.indexOf(userInputMediaType)];
+    activeMediaTypeData = mediaTypeData[Number(userInputMediaType) - 1];
     // Display the action menu for the selected media type
     return requestAction();
 }
 
 // -----------------------------------------------------------------  R E Q U E S T   A C T I O N   
 function requestAction() {
-    const actionInfoMessage = `Select an action to perform (or press Enter to go to MAIN MENU): 
-    [1] - Display items
-    [2] - Add new item 
-    [3] - Log the average rating 
-    [4] - Toggle isCheckedOut OR add a new rating 
-    [5] - Remove item`;
     // Display Action Menu header
-    console.log(`\n${mediaTypesNames[indexMediaTypeData]}`);
+    console.log(`\n${activeMediaTypeName}`);
     console.log(''.padEnd(70, '· '));
     // Prompt for and validate action selection
+    let userInputAction = undefined;
+    const actionToPerform = ['1', '2', '3', '4', '5', '6'];
+    const actionFunctions = [displayItems, addItem, logAverageRating, editItem, removeItem];
     do {
-        console.log(actionInfoMessage);
+        console.log(`Select an action to perform (or press Enter to go to MAIN MENU): 
+    [1] - Display items
+    [2] - Add new item 
+    [3] - Show average rating 
+    [4] - Toggle isCheckedOut OR add a new rating 
+    [5] - Remove item`);
         userInputAction = prompt().trim();
         // Return to Main Menu when Enter is pressed
         if (userInputAction.length === 0) {
@@ -409,11 +391,12 @@ function requestAction() {
         }
     } while (!actionToPerform.includes(userInputAction))
     // Execute the selected action
-    return actionFunctions[actionToPerform.indexOf(userInputAction)]();
+    return actionFunctions[Number(userInputAction) - 1]();
 }
 
 // -----------------------------------------------------------------  A P P   I N I T I A L I Z A T I O N 
 console.log(`
+    
   ######                                    ### #     #        #####                            
   #     #  ####   ####  #    #  ####        ### ##    #       #     # ##### #    # ###### ######
   #     # #    # #    # #   #  #             #  # #   #       #         #   #    # #      #     
