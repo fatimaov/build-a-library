@@ -132,7 +132,7 @@ function requestIndex() {
         userInputIndex = prompt(`    Enter the item index (0 - ${totalIndices}): `);
         // Exit action and return to Action Menu when Enter is pressed
         if (userInputIndex.length === 0) {
-            return requestAction();
+            return false;
         }
         // Convert input to a number for validation
         userInputIndex = Number(userInputIndex);
@@ -262,6 +262,9 @@ function logAverageRating() {
     };
     // Prompt for and validate the item index 
     const indexOfItem = requestIndex();
+    if (indexOfItem === false) {
+        return requestAction();
+    }
     // Inform the user if the item has no ratings
     if (activeMediaTypeData[indexOfItem].ratings.length === 0) {
         console.log(`\nThis item has no ratings yet.`);
@@ -289,6 +292,9 @@ function editItem() {
     };
     // Prompt for and validate the item index 
     const indexOfItem = requestIndex();
+    if (indexOfItem === false) {
+        return requestAction();
+    }
     // Prompt for and validate the selected task
     let userInputTaskToPerform = undefined;
     const taskToPerform = ['1', '2'];
@@ -334,6 +340,9 @@ function removeItem() {
     };
     // Prompt for and validate the item index 
     const indexOfItem = requestIndex();
+    if (indexOfItem === false) {
+        return requestAction();
+    }
     // Remove the item at the selected index
     activeMediaTypeData.splice(indexOfItem, 1);
     return displayItems();
