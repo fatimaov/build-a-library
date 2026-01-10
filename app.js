@@ -222,6 +222,7 @@ function addItem() {
         const addSong = (newSong) => {
             cdSongs.push(newSong);
         }
+        let userInputAnotherSong = undefined;
         do {
             // Prompt for and validate song title
             let userInputSong = undefined;
@@ -230,7 +231,6 @@ function addItem() {
             } while (userInputSong.length === 0);
             addSong(userInputSong);
             // Ask whether to add another song
-            let userInputAnotherSong = undefined;
             do {
                 console.log(`        Add another song?
         [y] - YES
