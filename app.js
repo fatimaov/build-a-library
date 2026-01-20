@@ -113,7 +113,7 @@ for (let k = 0; k < mediaTypeData.length; k += 1) {
 // -----------------------------------------------------------------  A C T I O N   F U N C T I O N S  
 // -----------------------------------------------------------------  I T E M S   E X I S T
 // Check whether the selected media type has any items
-function itemsExist() {
+function itemsDontExist() {
     if (activeMediaTypeData.length === 0) {
         console.log(`\nNo items available in the '${activeMediaTypeName}' category`);
         return true;
@@ -130,7 +130,6 @@ function requestIndex() {
     let userInputIndex = undefined;
     do {
         userInputIndex = prompt(`    Enter the item index (0 - ${totalIndices}): `);
-        // Exit action and return to Action Menu when Enter is pressed
         if (userInputIndex.length === 0) {
             return false;
         }
@@ -147,7 +146,7 @@ function requestAddItem() {
         console.log(`            Confirm adding this item?
             [y] - YES
             [n] - NO`);
-        userInputAddItem = prompt().toLocaleLowerCase().trim();
+        userInputAddItem = prompt().toLowerCase().trim();
     } while (userInputAddItem !== 'y' && userInputAddItem !== 'n');
     return userInputAddItem;
 }
@@ -155,7 +154,7 @@ function requestAddItem() {
 // -----------------------------------------------------------------  D I S P L A Y   I T E M S
 // Display all items for the selected media type
 function displayItems() {
-    if (itemsExist()) {
+    if (itemsDontExist()) {
         return requestAction();
     };
     console.table(activeMediaTypeData);
@@ -172,7 +171,7 @@ function addItem() {
     do {
         userInputTitle = prompt(`    Enter a title: `).trim();
     } while (userInputTitle.length === 0);
-    // Prompt for and validate reator
+    // Prompt for and validate creator
     let userInputCreator = undefined;
     do {
         userInputCreator = prompt(`    Enter an author, director, or artist: `).trim();
@@ -238,7 +237,7 @@ function addItem() {
                 userInputAnotherSong = prompt().toLowerCase().trim();
             } while (userInputAnotherSong !== 'y' && userInputAnotherSong !== 'n')
         } while (userInputAnotherSong === 'y');
-        // Prompt to confirm adding the cdData
+        // Prompt to confirm adding the item
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the CD, then display all CDs
@@ -257,7 +256,7 @@ function logAverageRating() {
     console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[2]}`);
     console.log(''.padEnd(70, '· '));
     // Ensure items exist before continuing
-    if (itemsExist()) {
+    if (itemsDontExist()) {
         return requestAction();
     };
     // Prompt for and validate the item index 
@@ -287,7 +286,7 @@ function editItem() {
     console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[3]}`);
     console.log(''.padEnd(70, '· '));
     // Ensure items exist before continuing
-    if (itemsExist()) {
+    if (itemsDontExist()) {
         return requestAction();
     };
     // Prompt for and validate the item index 
@@ -300,7 +299,7 @@ function editItem() {
     const taskToPerform = ['1', '2'];
     do {
         console.log(`    Select a task:
-            [1] - Toggle isCheckedOut
+            [1] - Toggle check-out state
             [2] - Add a new rating`);
         userInputTaskToPerform = prompt().trim();
         // Exit action and return to Action Menu when Enter is pressed
@@ -308,7 +307,7 @@ function editItem() {
             return requestAction();
         }
     } while (!taskToPerform.includes(userInputTaskToPerform))
-    // Toggle checked out status
+    // Toggle check-out state
     if (userInputTaskToPerform === taskToPerform[0]) {
         activeMediaTypeData[indexOfItem].toggleCheckedOutStatus();
         console.table(activeMediaTypeData[indexOfItem]);
@@ -335,7 +334,7 @@ function removeItem() {
     console.log(`\n${activeMediaTypeName} > ${actionFunctionsNames[4]} `);
     console.log(''.padEnd(70, '· '));
     // Ensure items exist before continuing
-    if (itemsExist()) {
+    if (itemsDontExist()) {
         return requestAction();
     };
     // Prompt for and validate the item index 
@@ -369,9 +368,7 @@ function requestMediaType() {
         }
     } while (!mediaTypes.includes(userInputMediaType))
     // Set the active media array based on user selection
-    // indexMediaTypeData = mediaTypes.indexOf(userInputMediaType);
     activeMediaTypeName = mediaTypeNames[Number(userInputMediaType) - 1];
-    // activeMediaTypeData = mediaTypeData[mediaTypes.indexOf(userInputMediaType)];
     activeMediaTypeData = mediaTypeData[Number(userInputMediaType) - 1];
     // Display the action menu for the selected media type
     return requestAction();
