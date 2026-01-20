@@ -388,7 +388,7 @@ function requestAction() {
     [1] - Display items
     [2] - Add new item 
     [3] - Show average rating 
-    [4] - Toggle isCheckedOut OR add a new rating 
+    [4] - Toggle check-out state OR add a new rating 
     [5] - Remove item`);
         userInputAction = prompt().trim();
         // Return to Main Menu when Enter is pressed
