@@ -22,7 +22,8 @@ From that base, this project was expanded into:
 
 ## 🎥 Demo
 
-![Media Library CLI Demo](./demo.gif)
+[![Watch the demo](./Build-a-library_Demo_.gif)](./Build-a-library_Demo_.gif)
+
 
 *(You can also run the app locally to explore the full flow.)*
 
