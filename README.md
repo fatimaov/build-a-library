@@ -122,4 +122,4 @@ The following features were intentionally left out of the current scope but repr
 ### Steps
 ```bash
 npm install
-node app.js
+npm start
