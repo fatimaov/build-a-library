@@ -4,33 +4,16 @@ const banner = require('./src/banner');
 const Book = require('./src/models/Book');
 const Movie = require('./src/models/Movie');
 const Cd = require('./src/models/CD');
+// Seed data
+const mediaTypeData = require('./src/seedGenerator');
 
 
 // -----------------------------------------------------------------  G L O B A L   V A R I A B L E S
 let activeMediaTypeName = undefined;
 let activeMediaTypeData = undefined;
-const bookData = [];
-const movieData = [];
-const cdData = [];
-const mediaTypeData = [bookData, movieData, cdData];
 const mediaTypeNames = ['BOOKS', 'MOVIES', 'CDs'];
 const actionFunctionsNames = ['MAIN MENU', 'ADD NEW ITEM', 'AVERAGE RATING', 'EDIT ITEM', 'REMOVE ITEM']
 
-// -----------------------------------------------------------------  S E E D   D A T A 
-bookData.push(new Book('The Housemaid', 'Freida McFadden', 336));
-bookData.push(new Book('A Little Life', 'Hanya Yanagihara', 720));
-movieData.push(new Movie('Interestellar', 'Christopher Nolan', 169));
-movieData.push(new Movie('Shrek', 'Andrew Adamson & Vicky Jenson', 90));
-cdData.push(new Cd('The Death of Slim Shady (Coup de Grâce)', 'Eminem', ['Habits', 'Trouble', 'Brand New Dance']));
-cdData.push(new Cd('Under My Skin', 'Avril Lavigne', ['Don`t Tell Me', 'My Happy Ending', 'Freak Out']));
-// Add random ratings to each seeded item
-for (let k = 0; k < mediaTypeData.length; k += 1) {
-    for (let j = 0; j < mediaTypeData[k].length; j += 1) {
-        for (let i = 1; i <= 5; i += 1) {
-            mediaTypeData[k][j].addRating(Math.floor(Math.random() * 6));
-        }
-    }
-}
 
 // -----------------------------------------------------------------  A C T I O N   F U N C T I O N S  
 // -----------------------------------------------------------------  I T E M S   E X I S T
