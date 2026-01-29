@@ -93,7 +93,7 @@ function addItem() {
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the book, then display all books
-            bookData.push(new Book(userInputTitle, userInputCreator, userInputPages));
+            mediaTypeData[0].push(new Book(userInputTitle, userInputCreator, userInputPages));
             return displayItems();
         } else if (addItem === 'n') {
             // If cancelled, return to the action menu
@@ -112,7 +112,7 @@ function addItem() {
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the movie, then display all movies
-            movieData.push(new Movie(userInputTitle, userInputCreator, userInputRuntime));
+            mediaTypeData[1].push(new Movie(userInputTitle, userInputCreator, userInputRuntime));
             return displayItems();
         } else if (addItem === 'n') {
             // If cancelled, return to the action menu
@@ -146,7 +146,7 @@ function addItem() {
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the CD, then display all CDs
-            cdData.push(new Cd(userInputTitle, userInputCreator, cdSongs));
+            mediaTypeData[2].push(new Cd(userInputTitle, userInputCreator, cdSongs));
             return displayItems();
         } else if (addItem === 'n') {
             // If cancelled, return to the action menu
