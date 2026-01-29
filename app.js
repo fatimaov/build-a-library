@@ -1,5 +1,5 @@
 const prompt = require("prompt-sync")();
-
+const banner = require('./src/banner');
 
 
 
@@ -400,20 +400,9 @@ function requestAction() {
     return actionFunctions[Number(userInputAction) - 1]();
 }
 
-// -----------------------------------------------------------------  A P P   I N I T I A L I Z A T I O N 
-console.log(`
-    
-  ######                                    ### #     #        #####                            
-  #     #  ####   ####  #    #  ####        ### ##    #       #     # ##### #    # ###### ######
-  #     # #    # #    # #   #  #             #  # #   #       #         #   #    # #      #     
-  ######  #    # #    # ####    ####  ##### #   #  #  # #####  #####    #   #    # #####  ##### 
-  #     # #    # #    # #  #        #           #   # #             #   #   #    # #      #     
-  #     # #    # #    # #   #  #    #           #    ##       #     #   #   #    # #      #     
-  ######   ####   ####  #    #  ####            #     #        #####    #    ####  #      #     
 
-
-  `);
-
+// App initialization
+console.log(banner());
 requestMediaType();
 
 
