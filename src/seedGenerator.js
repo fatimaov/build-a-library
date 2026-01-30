@@ -1,55 +1,16 @@
 const Book = require('./models/Book');
 const Movie = require('./models/Movie');
 const Cd = require('./models/CD');
+// Static data 
+const {mediaTypeClasses, staticMediaData} = require('./staticData');
 
-const numMedia = [Book, Movie, Cd]
-
-const mediaData = {
-    book: [
-        {
-            title: 'The Housemaid',
-            creator: 'Freida McFadden',
-            pagesRuntimeSongs: 336
-        },
-        {
-            title: 'A Little Life',
-            creator: 'Hanya Yanagihara',
-            pagesRuntimeSongs: 720
-        }
-    ],
-    movie: [
-        {
-            title: 'Interestellar',
-            creator: 'Christopher Nolan',
-            pagesRuntimeSongs: 169
-        },
-        {
-            title: 'Shrek',
-            creator: 'Andrew Adamson & Vicky Jenson',
-            pagesRuntimeSongs: 90
-        }
-    ],
-    cd: [
-        {
-            title: 'The Death of Slim Shady (Coup de Grâce)',
-            creator: 'Eminem',
-            pagesRuntimeSongs: ['Habits', 'Trouble', 'Brand New Dance']
-        },
-        {
-            title: 'Under My Skin',
-            creator: 'Avril Lavigne',
-            pagesRuntimeSongs: ['Don`t Tell Me', 'My Happy Ending', 'Freak Out']
-        }
-    ]
-}
-
-
-function mediaSeed(numMedia, mediaData) {
+function mediaSeed(mediaTypeClasses, staticMediaData) {
+    const mediaDataArr = Object.values(staticMediaData);
     const mediaTypeData = []
     const filledIndex = []
 
-    for (const i in Object.values(mediaData)) {
-        if (Object.values(mediaData)[i].length !== 0) {
+    for (const i in mediaDataArr) {
+        if (mediaDataArr[i].length !== 0) {
             filledIndex.push(i)
         }
     }
@@ -58,8 +19,8 @@ function mediaSeed(numMedia, mediaData) {
     for (let i = 0; i < filledIndex.length; i += 1) {
         currentValue = filledIndex[i];
         mediaTypeData.push([]);
-        for (let j = 0; j < (Object.values(mediaData)[currentValue].length); j += 1) {
-            mediaTypeData[i].push(new numMedia[currentValue]((Object.values(mediaData)[currentValue])[j].title, (Object.values(mediaData)[currentValue])[j].creator, (Object.values(mediaData)[currentValue])[j].pagesRuntimeSongs))
+        for (let j = 0; j < (mediaDataArr[currentValue].length); j += 1) {
+            mediaTypeData[i].push(new mediaTypeClasses[currentValue]((mediaDataArr[currentValue])[j].title, (mediaDataArr[currentValue])[j].creator, (mediaDataArr[currentValue])[j].pagesRuntimeSongs))
         }
     }
 
@@ -75,4 +36,5 @@ function mediaSeed(numMedia, mediaData) {
     return mediaTypeData;
 }
 
-module.exports = mediaSeed(numMedia, mediaData);
+
+module.exports = mediaSeed(mediaTypeClasses, staticMediaData);
