@@ -5,7 +5,7 @@ const Book = require('./src/models/Book');
 const Movie = require('./src/models/Movie');
 const Cd = require('./src/models/CD');
 // Seed data
-const mediaTypeData = require('./src/seedGenerator');
+const mediaInstances = require('./src/seedGenerator');
 
 
 // -----------------------------------------------------------------  G L O B A L   V A R I A B L E S
@@ -93,7 +93,7 @@ function addItem() {
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the book, then display all books
-            mediaTypeData[0].push(new Book(userInputTitle, userInputCreator, userInputPages));
+            mediaInstances[0].push(new Book(userInputTitle, userInputCreator, userInputPages));
             return displayItems();
         } else if (addItem === 'n') {
             // If cancelled, return to the action menu
@@ -112,7 +112,7 @@ function addItem() {
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the movie, then display all movies
-            mediaTypeData[1].push(new Movie(userInputTitle, userInputCreator, userInputRuntime));
+            mediaInstances[1].push(new Movie(userInputTitle, userInputCreator, userInputRuntime));
             return displayItems();
         } else if (addItem === 'n') {
             // If cancelled, return to the action menu
@@ -146,7 +146,7 @@ function addItem() {
         const addItem = requestAddItem();
         if (addItem === 'y') {
             // If confirmed, create and add the CD, then display all CDs
-            mediaTypeData[2].push(new Cd(userInputTitle, userInputCreator, cdSongs));
+            mediaInstances[2].push(new Cd(userInputTitle, userInputCreator, cdSongs));
             return displayItems();
         } else if (addItem === 'n') {
             // If cancelled, return to the action menu
@@ -274,7 +274,7 @@ function requestMediaType() {
     } while (!mediaTypes.includes(userInputMediaType))
     // Set the active media array based on user selection
     activeMediaTypeName = mediaTypeNames[Number(userInputMediaType) - 1];
-    activeMediaTypeData = mediaTypeData[Number(userInputMediaType) - 1];
+    activeMediaTypeData = mediaInstances[Number(userInputMediaType) - 1];
     // Display the action menu for the selected media type
     return requestAction();
 }

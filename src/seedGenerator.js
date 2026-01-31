@@ -1,40 +1,55 @@
-const Book = require('./models/Book');
-const Movie = require('./models/Movie');
-const Cd = require('./models/CD');
-// Static data 
-const {mediaTypeClasses, staticMediaData} = require('./staticData');
+// Static data and media type classes
+const { mediaTypeClasses, staticMediaData } = require('./staticData');
 
-function mediaSeed(mediaTypeClasses, staticMediaData) {
-    const mediaDataArr = Object.values(staticMediaData);
-    const mediaTypeData = []
-    const filledIndex = []
-
-    for (const i in mediaDataArr) {
-        if (mediaDataArr[i].length !== 0) {
-            filledIndex.push(i)
+function addRandomRating(mediaInstances) {
+    for (let k = 0; k < mediaInstances.length; k += 1) {
+        for (let j = 0; j < mediaInstances[k].length; j += 1) {
+            for (let i = 1; i <= 5; i += 1) {
+                mediaInstances[k][j].addRating(Math.floor(Math.random() * 6));
+            }
         }
     }
+    return mediaInstances;
+}
 
-    let currentValue = undefined;
-    for (let i = 0; i < filledIndex.length; i += 1) {
-        currentValue = filledIndex[i];
-        mediaTypeData.push([]);
-        for (let j = 0; j < (mediaDataArr[currentValue].length); j += 1) {
-            mediaTypeData[i].push(new mediaTypeClasses[currentValue]((mediaDataArr[currentValue])[j].title, (mediaDataArr[currentValue])[j].creator, (mediaDataArr[currentValue])[j].pagesRuntimeSongs))
+function getNonEmptyMediaIndices(mediaValues) {
+        const nonEmptyIndices = [];
+        for (const mediaIndex in mediaValues) {
+            if (mediaValues[mediaIndex].length !== 0) {
+                nonEmptyIndices.push(mediaIndex)
+            }
+        }
+        return nonEmptyIndices;
+    }
+
+function generateMediaInstances(mediaTypeClasses, staticMediaData) {
+    // Collect indices of media types with existing data to enable dynamic instance generation
+    const mediaValues = Object.values(staticMediaData);
+    const nonEmptyIndices = getNonEmptyMediaIndices(mediaValues);
+    
+    // Generate media instances grouped by media type, preserving the fixed order
+    // between static data (staticMediaData) and corresponding media classes (mediaTypeClasses)
+    // (books → movies → CDs)
+    const mediaInstances = [];
+    let currentNonEmptyIndex = undefined;
+    for (let i = 0; i < nonEmptyIndices.length; i += 1) {
+        currentNonEmptyIndex = nonEmptyIndices[i];
+        mediaInstances.push([]);
+        for (let j = 0; j < (mediaValues[currentNonEmptyIndex].length); j += 1) {
+            mediaInstances[i].push(
+                new mediaTypeClasses[currentNonEmptyIndex](
+                    (mediaValues[currentNonEmptyIndex])[j].title,
+                    (mediaValues[currentNonEmptyIndex])[j].creator,
+                    (mediaValues[currentNonEmptyIndex])[j].metadata
+                )
+            )
         }
     }
 
     // // Add random ratings to each seeded item
-    for (let k = 0; k < mediaTypeData.length; k += 1) {
-        for (let j = 0; j < mediaTypeData[k].length; j += 1) {
-            for (let i = 1; i <= 5; i += 1) {
-                mediaTypeData[k][j].addRating(Math.floor(Math.random() * 6));
-            }
-        }
-    }
+    addRandomRating(mediaInstances);
 
-    return mediaTypeData;
+    return mediaInstances;
 }
 
-
-module.exports = mediaSeed(mediaTypeClasses, staticMediaData);
+module.exports = generateMediaInstances(mediaTypeClasses, staticMediaData);
