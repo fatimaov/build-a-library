@@ -1,6 +1,6 @@
-const Book = require('./models/Book');
-const Movie = require('./models/Movie');
-const Cd = require('./models/CD');
+const Book = require('../models/Book.js');
+const Movie = require('../models/Movie.js');
+const Cd = require('../models/CD.js');
 
 const mediaTypeClasses = [Book, Movie, Cd]
 

@@ -5,7 +5,7 @@ const Book = require('./src/models/Book');
 const Movie = require('./src/models/Movie');
 const Cd = require('./src/models/CD');
 // Seed data
-const mediaInstances = require('./src/seedGenerator');
+const mediaInstances = require('./src/data/seedGenerator');
 
 
 // -----------------------------------------------------------------  G L O B A L   V A R I A B L E S
