@@ -52,4 +52,7 @@ function generateMediaInstances(mediaTypeClasses, staticMediaData) {
     return mediaInstances;
 }
 
-module.exports = generateMediaInstances(mediaTypeClasses, staticMediaData);
+const mediaInstances = generateMediaInstances(mediaTypeClasses, staticMediaData);
+const mediaTypeNames = ['BOOKS', 'MOVIES', 'CDs'];
+
+module.exports = {mediaInstances, mediaTypeNames} ;

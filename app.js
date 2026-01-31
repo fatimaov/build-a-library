@@ -5,13 +5,13 @@ const Book = require('./src/models/Book');
 const Movie = require('./src/models/Movie');
 const Cd = require('./src/models/CD');
 // Seed data
-const mediaInstances = require('./src/data/seedGenerator');
+const {mediaInstances, mediaTypeNames} = require('./src/data/seedGenerator');
+// Request media type
+const requestMediaType = require('./src/menus/mediaTypeMenu');  
 
 
 // -----------------------------------------------------------------  G L O B A L   V A R I A B L E S
-let activeMediaTypeName = undefined;
-let activeMediaTypeData = undefined;
-const mediaTypeNames = ['BOOKS', 'MOVIES', 'CDs'];
+
 const actionFunctionsNames = ['MAIN MENU', 'ADD NEW ITEM', 'AVERAGE RATING', 'EDIT ITEM', 'REMOVE ITEM']
 
 
@@ -252,63 +252,10 @@ function removeItem() {
     return displayItems();
 }
 
-
-// -----------------------------------------------------------------  R E Q U E S T   M E D I A   T Y P E
-function requestMediaType() {
-    // Display Main Menu header
-    console.log(`\n${actionFunctionsNames[0]}`);
-    console.log(''.padEnd(70, '· '));
-    // Prompt for and validate media type selection
-    const mediaTypes = ['1', '2', '3'];
-    let userInputMediaType = undefined;
-    do {
-        console.log(`Select a media type (or press Enter to exit the app):
-    [1] - Books
-    [2] - Movies
-    [3] - CDs`);
-        userInputMediaType = prompt().trim();
-        // Exit the App when Enter is pressed
-        if (userInputMediaType.length === 0) {
-            return;
-        }
-    } while (!mediaTypes.includes(userInputMediaType))
-    // Set the active media array based on user selection
-    activeMediaTypeName = mediaTypeNames[Number(userInputMediaType) - 1];
-    activeMediaTypeData = mediaInstances[Number(userInputMediaType) - 1];
-    // Display the action menu for the selected media type
-    return requestAction();
-}
-
-// -----------------------------------------------------------------  R E Q U E S T   A C T I O N   
-function requestAction() {
-    // Display Action Menu header
-    console.log(`\n${activeMediaTypeName}`);
-    console.log(''.padEnd(70, '· '));
-    // Prompt for and validate action selection
-    let userInputAction = undefined;
-    const actionToPerform = ['1', '2', '3', '4', '5', '6'];
-    const actionFunctions = [displayItems, addItem, logAverageRating, editItem, removeItem];
-    do {
-        console.log(`Select an action to perform (or press Enter to go to MAIN MENU): 
-    [1] - Display items
-    [2] - Add new item 
-    [3] - Show average rating 
-    [4] - Toggle check-out state OR add a new rating 
-    [5] - Remove item`);
-        userInputAction = prompt().trim();
-        // Return to Main Menu when Enter is pressed
-        if (userInputAction.length === 0) {
-            return requestMediaType();
-        }
-    } while (!actionToPerform.includes(userInputAction))
-    // Execute the selected action
-    return actionFunctions[Number(userInputAction) - 1]();
-}
-
-
+ 
 // App initialization
 console.log(banner());
-requestMediaType();
+requestMediaType(mediaTypeNames, mediaInstances);
 
 
 
